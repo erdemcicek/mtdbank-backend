@@ -13,12 +13,15 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+
 @Entity
 @Table(name = "user_role")
 @Getter
 @Setter
 @NoArgsConstructor
 public class UserRole {
+	
+	
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	private long userRoleId;
@@ -35,4 +38,6 @@ public class UserRole {
 		this.user = user;
 		this.role = role;
 	}
+	
+	
 }
