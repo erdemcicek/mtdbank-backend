@@ -12,7 +12,6 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
-import javax.persistence.OneToOne;
 
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -24,28 +23,31 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 
- @Getter @Setter @NoArgsConstructor @ToString @Entity
+@Getter
+@Setter
+@ToString
+@Entity
+@NoArgsConstructor
 public class User implements UserDetails {
-
+	
 	private static final long serialVersionUID = 1L;
 	
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	@Column(name = "userId", nullable = false , updatable = false)
+	@Column(name="userId", nullable=false, updatable=false)
 	private Long userId;
 	
-	@Column(name="username", nullable = false, unique = true)
+	@Column(name="username", nullable=false, unique=true)
 	private String username;
 	
-	@Column(name="username", nullable = false)
-
+	@Column(name="password", nullable=false)
 	private String password;
 	
 	private String firstName;
 	
 	private String lastName;
 	
-	@Column(name = "email", nullable = false, unique = true)
+	@Column(name="email", nullable=false, unique=true)
 	private String email;
 	
 	private String dob;
@@ -58,27 +60,20 @@ public class User implements UserDetails {
 	@JsonIgnore
 	private Set<UserRole> userRoles = new HashSet<>();
 	
-	
-	public User(String firstName, String lastName, String username,
-			String email, String dob, String password) {
+	public User(String firstName, String lastName, String username,String dob,
+			String email, String password) {
 		this.firstName = firstName;
 		this.lastName = lastName;
 		this.username = username;
-		this.email = email;
 		this.dob = dob;
+		this.email = email;
 		this.password = password;
 	}
-	
-//	@OneToOne
-//	private Account account;
-//	
-//	@OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-//	private List<Recipient> recipients;
 
 	@Override
 	public Collection<? extends GrantedAuthority> getAuthorities() {
 		Set<GrantedAuthority> authorities = new HashSet<>();
-		userRoles.forEach(ur -> authorities.add( new Authority(ur.getRole().getName())));
+		userRoles.forEach( ur -> authorities.add( new Authority(ur.getRole().getName())));
 		return authorities;
 	}
 
@@ -112,5 +107,4 @@ public class User implements UserDetails {
 		return true;
 	}
 
-	
 }
