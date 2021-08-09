@@ -79,10 +79,10 @@ public class LoginController {
 		return new ResponseEntity<>(response, HttpStatus.OK);
 	}
 	
-//	@PostMapping("/login")
-//	public ResponseEntity<LoginResponse> authenticateUser(@Valid @RequestBody LoginForm loginForm){
-//		
-//	}
+	@PostMapping("/login")
+	public ResponseEntity<LoginResponse> authenticateUser(@Valid @RequestBody LoginForm loginForm){
+		
+	}
 
 	
 }
