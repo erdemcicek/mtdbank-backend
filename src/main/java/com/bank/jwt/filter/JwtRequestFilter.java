@@ -18,6 +18,7 @@ import org.springframework.web.filter.OncePerRequestFilter;
 import com.bank.service.impl.UserDetailsServiceImpl;
 import com.bank.util.JwtUtil;
 
+
 @Component
 public class JwtRequestFilter extends OncePerRequestFilter {
 	
@@ -55,10 +56,6 @@ public class JwtRequestFilter extends OncePerRequestFilter {
 				
 			}
 		}
-		
 		filterChain.doFilter(request, response);
-		
-	}
-
-	
+	}	
 }
