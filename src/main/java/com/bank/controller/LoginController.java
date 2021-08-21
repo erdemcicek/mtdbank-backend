@@ -8,6 +8,10 @@ import javax.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -15,13 +19,18 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.bank.dao.UserDAO;
 import com.bank.model.Role;
 import com.bank.model.User;
 import com.bank.model.UserRole;
 import com.bank.repository.RoleRepo;
 import com.bank.repository.UserRepo;
+import com.bank.request.LoginForm;
 import com.bank.request.SignUpForm;
+import com.bank.response.LoginResponse;
 import com.bank.response.Response;
+import com.bank.service.UserService;
+import com.bank.util.JwtUtil;
 
 @CrossOrigin(origins="*", allowedHeaders="*")
 @RestController
@@ -36,6 +45,15 @@ public class LoginController {
 	
 	@Autowired
 	PasswordEncoder encoder;
+	
+	@Autowired
+	AuthenticationManager authenticationManager;
+	
+	@Autowired
+	JwtUtil jwtUtil;
+	
+	@Autowired
+	UserService userService;
 	
 	
 	@PostMapping("/register")
@@ -82,6 +100,25 @@ public class LoginController {
 	@PostMapping("/login")
 	public ResponseEntity<LoginResponse> authenticateUser(@Valid @RequestBody LoginForm loginForm){
 		
+		// Create Authentication Object from username & password
+		Authentication authentication = authenticationManager.authenticate( 
+				new UsernamePasswordAuthenticationToken(loginForm.getUsername(), loginForm.getPassword()));
+		
+		// Put that authenticate object in context holder
+		SecurityContextHolder.getContext().setAuthentication(authentication);
+		
+		// Create JWT Token
+		String jwtToken = jwtUtil.generateToken(authentication);
+		
+		User user = (User) authentication.getPrincipal();
+		
+		// Convert user to userdao object
+		UserDAO userDAO = userService.getUserDAO(user);
+		
+		LoginResponse response = new LoginResponse(userDAO, jwtToken);
+		
+		
+		return new ResponseEntity<>(response, HttpStatus.OK);
 	}
 
 	

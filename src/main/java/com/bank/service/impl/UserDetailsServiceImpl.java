@@ -26,7 +26,20 @@ public class UserDetailsServiceImpl implements UserDetailsService, UserService{
 	}
 	@Override
 	public UserDAO getUserDAO(User user) {
-		return null;
+		
+		UserDAO userDAO = new UserDAO();
+		userDAO.setUsername(user.getUsername());
+		userDAO.setFirstName(user.getFirstName());
+		userDAO.setLastName(user.getLastName());
+		userDAO.setEmail(user.getEmail());
+		userDAO.setPhone(user.getPhone());
+		
+		// Check if User has admin role
+		boolean isAdminExist = user.getUserRoles().stream()
+								.anyMatch(userRole -> userRole.getRole().getName().equalsIgnoreCase("admin"));
+		userDAO.setIsAdmin(isAdminExist);
+		
+		return userDAO;
 	}
 	@Override
 	public UserDAO getUserDAOByName(String userName) {
