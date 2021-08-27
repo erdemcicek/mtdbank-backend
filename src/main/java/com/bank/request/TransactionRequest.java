@@ -26,7 +26,4 @@ public class TransactionRequest {
 	public void setComment(String comment) {
 		this.comment = comment;
 	}
-
-	
-
 }
