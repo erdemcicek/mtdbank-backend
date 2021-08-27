@@ -3,6 +3,7 @@ package com.bank.model;
 import java.util.Collection;
 
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import javax.persistence.CascadeType;
@@ -13,6 +14,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
 
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -62,6 +64,15 @@ public class User implements UserDetails {
 	@OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
 	@JsonIgnore
 	private Set<UserRole> userRoles = new HashSet<>();
+	
+	@OneToOne
+	private Account account;
+	
+	@OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+	@JsonIgnore
+	private List<Recipient> recipients;
+	
+	public User() {}
 	
 	public User(String firstName, String lastName, String username,String dob,
 			String email, String password) {
@@ -182,12 +193,32 @@ public class User implements UserDetails {
 		this.enabled = enabled;
 	}
 
+
+	public Account getAccount() {
+		return account;
+	}
+
+	public void setAccount(Account account) {
+		this.account = account;
+	}
+
+	public List<Recipient> getRecipients() {
+		return recipients;
+	}
+
+	public void setRecipients(List<Recipient> recipients) {
+		this.recipients = recipients;
+	}
+
 	@Override
 	public String toString() {
 		return "User [userId=" + userId + ", username=" + username + ", password=" + password + ", firstName="
 				+ firstName + ", lastName=" + lastName + ", email=" + email + ", dob=" + dob + ", phone=" + phone
-				+ ", enabled=" + enabled + ", userRoles=" + userRoles + "]";
+				+ ", enabled=" + enabled + ", userRoles=" + userRoles + ", account=" + account + ", recipients="
+				+ recipients + "]";
 	}
+
+	
 
 	
 	

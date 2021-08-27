@@ -13,9 +13,9 @@ import javax.persistence.OneToMany;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
-import lombok.Data;
+///import lombok.Data;
 
-@Data
+//@Data
 @Entity
 public class Account {
 
@@ -28,4 +28,37 @@ public class Account {
 	@OneToMany(mappedBy = "account", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
 	@JsonIgnore
 	private List<Transaction> transactions;
+
+	public Long getId() {
+		return id;
+	}
+
+	public void setId(Long id) {
+		this.id = id;
+	}
+
+	public Long getAccountNumber() {
+		return accountNumber;
+	}
+
+	public void setAccountNumber(Long accountNumber) {
+		this.accountNumber = accountNumber;
+	}
+
+	public BigDecimal getAccountBalance() {
+		return accountBalance;
+	}
+
+	public void setAccountBalance(BigDecimal accountBalance) {
+		this.accountBalance = accountBalance;
+	}
+
+	public List<Transaction> getTransactions() {
+		return transactions;
+	}
+
+	public void setTransactions(List<Transaction> transactions) {
+		this.transactions = transactions;
+	}
+
 }

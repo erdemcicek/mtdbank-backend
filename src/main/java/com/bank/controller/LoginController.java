@@ -29,6 +29,7 @@ import com.bank.request.LoginForm;
 import com.bank.request.SignUpForm;
 import com.bank.response.LoginResponse;
 import com.bank.response.Response;
+import com.bank.service.AccountService;
 import com.bank.service.UserService;
 import com.bank.util.JwtUtil;
 
@@ -54,6 +55,9 @@ public class LoginController {
 	
 	@Autowired
 	UserService userService;
+	
+	@Autowired
+	AccountService accountService;
 	
 	
 	@PostMapping("/register")
@@ -88,6 +92,8 @@ public class LoginController {
 		});
 		
 		user.setUserRoles(userRoles);
+		
+		user.setAccount(accountService.createAccount());
 		// "save" method will save this user object in the database
 		userRepo.save(user);
 		
