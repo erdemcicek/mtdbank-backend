@@ -13,8 +13,6 @@ import javax.persistence.OneToMany;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
-///import lombok.Data;
-
 //@Data
 @Entity
 public class Account {
@@ -60,5 +58,4 @@ public class Account {
 	public void setTransactions(List<Transaction> transactions) {
 		this.transactions = transactions;
 	}
-
 }
