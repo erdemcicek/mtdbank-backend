@@ -10,19 +10,13 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
-//import lombok.Getter;
-//import lombok.NoArgsConstructor;
-//import lombok.Setter;
-
-
 //@Getter
 //@Setter
 //@NoArgsConstructor
 @Entity
 @Table(name = "user_role")
 public class UserRole {
-	
-	
+		
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	private long userRoleId;
@@ -64,7 +58,5 @@ public class UserRole {
 
 	public void setRole(Role role) {
 		this.role = role;
-	}
-	
-	
+	}		
 }
