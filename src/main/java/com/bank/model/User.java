@@ -1,9 +1,7 @@
 package com.bank.model;
 
 import java.util.Collection;
-
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 import javax.persistence.CascadeType;
@@ -21,73 +19,64 @@ import org.springframework.security.core.userdetails.UserDetails;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
-//import lombok.Getter;
-//import lombok.NoArgsConstructor;
-//import lombok.Setter;
-//import lombok.ToString;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.ToString;
 
-
-//@Getter
-//@Setter
-//@ToString
-//@NoArgsConstructor
+@Getter
+@Setter
+@ToString
+@NoArgsConstructor
 @Entity
 public class User implements UserDetails {
-	
-	
 	private static final long serialVersionUID = 1L;
-	
+
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	@Column(name="userId", nullable=false, updatable=false)
+	@Column(name = "userId", nullable = false, updatable = false)
 	private Long userId;
-	
-	@Column(name="username", nullable=false, unique=true)
+
+	@Column(name = "username", nullable = false, unique = true)
 	private String username;
-	
-	@Column(name="password", nullable=false)
+
+	@Column(name = "password", nullable = false)
 	private String password;
-	
+
 	private String firstName;
-	
+
 	private String lastName;
-	
-	@Column(name="email", nullable=false, unique=true)
+
+	@Column(name = "email", nullable = false, unique = true)
 	private String email;
-	
+
 	private String dob;
-	
+
 	private String phone;
-	
+
 	private boolean enabled = true;
-	
+
 	@OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
 	@JsonIgnore
 	private Set<UserRole> userRoles = new HashSet<>();
 	
 	@OneToOne
 	private Account account;
-	
-	@OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-	@JsonIgnore
-	private List<Recipient> recipients;
-	
-	public User() {}
-	
-	public User(String firstName, String lastName, String username,String dob,
-			String email, String password) {
+
+	public User(String firstName, String lastName, String username, String email, String dob, String password) {
 		this.firstName = firstName;
 		this.lastName = lastName;
 		this.username = username;
-		this.dob = dob;
 		this.email = email;
+		this.dob = dob;
 		this.password = password;
 	}
 
+	// Handle the roles
 	@Override
 	public Collection<? extends GrantedAuthority> getAuthorities() {
 		Set<GrantedAuthority> authorities = new HashSet<>();
-		userRoles.forEach( ur -> authorities.add( new Authority(ur.getRole().getName())));
+		userRoles.forEach(ur -> authorities.add(new Authority(ur.getRole().getName())));
 		return authorities;
 	}
 
@@ -121,105 +110,4 @@ public class User implements UserDetails {
 		return true;
 	}
 
-	public Long getUserId() {
-		return userId;
-	}
-
-	public void setUserId(Long userId) {
-		this.userId = userId;
-	}
-
-	public String getFirstName() {
-		return firstName;
-	}
-
-	public void setFirstName(String firstName) {
-		this.firstName = firstName;
-	}
-
-	public String getLastName() {
-		return lastName;
-	}
-
-	public void setLastName(String lastName) {
-		this.lastName = lastName;
-	}
-
-	public String getEmail() {
-		return email;
-	}
-
-	public void setEmail(String email) {
-		this.email = email;
-	}
-
-	public String getDob() {
-		return dob;
-	}
-
-	public void setDob(String dob) {
-		this.dob = dob;
-	}
-
-	public String getPhone() {
-		return phone;
-	}
-
-	public void setPhone(String phone) {
-		this.phone = phone;
-	}
-
-	public Set<UserRole> getUserRoles() {
-		return userRoles;
-	}
-
-	public void setUserRoles(Set<UserRole> userRoles) {
-		this.userRoles = userRoles;
-	}
-
-	public static long getSerialversionuid() {
-		return serialVersionUID;
-	}
-
-	public void setUsername(String username) {
-		this.username = username;
-	}
-
-	public void setPassword(String password) {
-		this.password = password;
-	}
-
-	public void setEnabled(boolean enabled) {
-		this.enabled = enabled;
-	}
-
-
-	public Account getAccount() {
-		return account;
-	}
-
-	public void setAccount(Account account) {
-		this.account = account;
-	}
-
-	public List<Recipient> getRecipients() {
-		return recipients;
-	}
-
-	public void setRecipients(List<Recipient> recipients) {
-		this.recipients = recipients;
-	}
-
-	@Override
-	public String toString() {
-		return "User [userId=" + userId + ", username=" + username + ", password=" + password + ", firstName="
-				+ firstName + ", lastName=" + lastName + ", email=" + email + ", dob=" + dob + ", phone=" + phone
-				+ ", enabled=" + enabled + ", userRoles=" + userRoles + ", account=" + account + ", recipients="
-				+ recipients + "]";
-	}
-
-	
-
-	
-	
 }

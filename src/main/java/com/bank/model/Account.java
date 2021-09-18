@@ -13,7 +13,9 @@ import javax.persistence.OneToMany;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
-//@Data
+import lombok.Data;
+
+@Data
 @Entity
 public class Account {
 

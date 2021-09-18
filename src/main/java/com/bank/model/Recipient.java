@@ -2,6 +2,7 @@ package com.bank.model;
 
 import javax.persistence.Entity;
 
+
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -25,6 +26,16 @@ public class Recipient {
 	private Integer phone;
 	private String bankName;
 	private String bankNumber;
+	
+	public Recipient() {}
+	
+	public Recipient(String name, String email, Integer phone, String bankName, String bankNumber) {
+		this.name = name;
+		this.email = email;
+		this.phone = phone;
+		this.bankName = bankName;
+		this.bankNumber = bankNumber;
+	}
 	
 	@ManyToOne
 	@JoinColumn(name="user_id")

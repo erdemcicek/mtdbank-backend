@@ -7,11 +7,15 @@ import java.util.concurrent.ThreadLocalRandom;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.bank.dao.AccountDAO;
 import com.bank.model.Account;
+import com.bank.model.Recipient;
 import com.bank.model.Transaction;
 import com.bank.model.User;
 import com.bank.repository.AccountRepo;
+import com.bank.repository.RecipientRepo;
 import com.bank.request.TransactionRequest;
+import com.bank.request.TransferRequest;
 import com.bank.service.AccountService;
 import com.bank.service.TransactionService;
 import com.bank.util.TransactionType;
@@ -20,25 +24,23 @@ import com.bank.util.TransactionType;
 public class AccountServiceImpl implements AccountService {
 	
 	@Autowired
-	AccountRepo accountRepo;
+	AccountDAO accountDAO;
 	
 	@Autowired
 	TransactionService transactionService;
+	
+	@Autowired
+	RecipientRepo recipientRepo;
 
 	@Override
 	public Account createAccount() {
 		Account account = new Account();
 		account.setAccountBalance( BigDecimal.valueOf(0.0));
 		account.setAccountNumber(getAccountNumber());
-		accountRepo.save(account);
-		return accountRepo.findByAccountNumber(account.getAccountNumber());
+		accountDAO.save(account);
+		return accountDAO.findByAccountNumber(account.getAccountNumber());
 	}
 	
-	private Long getAccountNumber() {
-		long smallest = 1000_0000_0000_0000L;
-		long biggest = 9999_9999_9999_9999L;
-		return ThreadLocalRandom.current().nextLong(smallest, biggest);
-	}
 
 	@Override
 	public void deposit(TransactionRequest request, User user) {
@@ -47,7 +49,7 @@ public class AccountServiceImpl implements AccountService {
 		Account account = user.getAccount();
 		double amount = request.getAmount();
 		account.setAccountBalance(account.getAccountBalance().add( BigDecimal.valueOf(amount)));
-		accountRepo.save(account);
+		accountDAO.save(account);
 		
 		// this code is to update the transaction
 		Transaction transaction = new Transaction(new Date(), request.getComment(), TransactionType.DEPOSIT.toString(), 
@@ -61,13 +63,38 @@ public class AccountServiceImpl implements AccountService {
 		Account account = user.getAccount();
 		double amount = request.getAmount();
 		account.setAccountBalance(account.getAccountBalance().subtract( BigDecimal.valueOf(amount)));
-		accountRepo.save(account);
+		accountDAO.save(account);
 		
 		// this code is to update transaction
 		Transaction transaction = new Transaction(new Date(), request.getComment(), TransactionType.WITHDRAW.toString(), 
 													amount, account.getAccountBalance(), false, account);
 		transactionService.saveTransaction(transaction);
 		
+	}
+
+	@Override
+	public void saveRecipient(Recipient recipient) {
+		recipientRepo.save(recipient);
+	}
+
+	@Override
+	public void transfer(TransferRequest request, User user) {
+		Account account = user.getAccount();
+		Double amount = request.getAmount();
+		account.setAccountBalance(account.getAccountBalance().subtract(new BigDecimal(amount)));
+		accountDAO.save(account);
+		Date date = new Date();
+		Transaction transaction = new Transaction(date,
+								"Transferred to " + request.getRecipientName(),
+								TransactionType.TRANSFER.toString(), amount,
+								account.getAccountBalance(), true, account);
+		transactionService.saveTransaction(transaction);
+	}
+	
+	private Long getAccountNumber() {
+		long smallest = 1000_0000_0000_0000L;
+		long biggest = 9999_9999_9999_9999L;
+		return ThreadLocalRandom.current().nextLong(smallest, biggest);
 	}
 
 }

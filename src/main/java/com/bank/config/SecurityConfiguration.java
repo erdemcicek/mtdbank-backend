@@ -16,40 +16,47 @@ import com.bank.service.impl.UserDetailsServiceImpl;
 
 @EnableWebSecurity
 public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
-	
+
 	@Autowired
 	private UserDetailsServiceImpl userDetailsServiceImpl;
 	
 	@Autowired
 	JwtRequestFilter jwtFilter;
 
-	
+	/**
+	 * Configure method is used for authentication.
+	 *
+	 * @param auth the auth
+	 * @throws Exception the exception
+	 */
 	@Override
 	protected void configure(AuthenticationManagerBuilder auth) throws Exception {
 		auth.userDetailsService(userDetailsServiceImpl).passwordEncoder(passwordEncoder());
 	}
-	
+
 	@Override
 	@Bean
 	public AuthenticationManager authenticationManagerBean() throws Exception {
 		return super.authenticationManagerBean();
 	}
-	
+
+	/**
+	 * Password encoder method is used to encrypt the password.
+	 *
+	 * @return the b crypt password encoder
+	 */
 	@Bean
 	public BCryptPasswordEncoder passwordEncoder() {
 		return new BCryptPasswordEncoder();
 	}
-	
+
 	@Override
-	protected void configure(HttpSecurity http) throws Exception {
-		http
-			 .cors().and()
-			 .csrf().disable()
-			 .authorizeRequests().antMatchers("/auth/**").permitAll()
-			 .anyRequest().authenticated().and()
-			 .exceptionHandling().and()
-			 .sessionManagement()
-			 .sessionCreationPolicy(SessionCreationPolicy.STATELESS);
-		http.addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
+	protected void configure(HttpSecurity httpSecurity) throws Exception {
+		httpSecurity.cors().and().csrf().disable().authorizeRequests().
+		antMatchers("/auth/**").permitAll().anyRequest()
+				.authenticated().and().exceptionHandling().and().sessionManagement()
+				.sessionCreationPolicy(SessionCreationPolicy.STATELESS);
+		httpSecurity.addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
 	}
+
 }

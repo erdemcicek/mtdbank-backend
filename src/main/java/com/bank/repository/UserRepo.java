@@ -7,15 +7,18 @@ import org.springframework.data.repository.CrudRepository;
 
 import com.bank.model.User;
 
-public interface UserRepo extends CrudRepository<User, Long> {
-
-	Optional<User> findByUsername(String username);
+/**
+ * The Class UserRepo is used to connect user table.
+ */
+public interface UserRepo extends CrudRepository<User, Long>{
 	
-	boolean existsByUsername(String username);
+	Optional<User> findByUsername(String userName);
+	
+	boolean existsByUsername(String userName);
 	
 	boolean existsByEmail(String email);
 	
-	List<User> findAll(); 	// select * from user;
-	
-	long count(); 			// select count(*) from user;
+	List<User> findAll(); 
+
+	long count();
 }
