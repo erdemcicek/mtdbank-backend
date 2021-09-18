@@ -117,18 +117,4 @@ public class AccountController {
 		return new ResponseEntity<>(response, HttpStatus.OK);
 	}
 	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
 }
